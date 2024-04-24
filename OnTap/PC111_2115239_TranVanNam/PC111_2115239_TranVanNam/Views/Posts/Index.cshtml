@@ -1,0 +1,72 @@
+﻿@model PagedList.IPagedList<PC111_2115239_TranVanNam.Models.Post>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Posts", FormMethod.Get))
+{
+    <p>
+        Tìm kiếm: @Html.TextBox("searchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Tìm kiếm" />
+    </p>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.NameSortParm })">
+                Tên
+                @if (ViewBag.CurrentSort == "name_desc")
+                {
+                    <i class="fa fa-sort-down"></i>
+                }
+                else if (ViewBag.CurrentSort == "name_asc")
+                {
+                    <i class="fa fa-sort-up"></i>
+                }
+                else
+                {
+                    <i class="fa fa-sort"></i>
+                }
+            </a>
+            </th>
+<th>
+            Nội Dung
+        </th>
+        <th>
+            Tên Blog
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Blog.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.PostId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.PostId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.PostId })
+            </td>
+        </tr>
+    }
+</table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, searchString = ViewBag.CurrentFilter }))

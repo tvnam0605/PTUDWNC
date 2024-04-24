@@ -1,0 +1,118 @@
+﻿
+@model PagedList.IPagedList<MvcBlog.Models.Post>
+@using PagedList.Mvc;
+
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Posts", FormMethod.Get, new { @class = "search-form" }))
+{
+    <fieldset>
+        <legend>Tìm kiếm bài viết</legend>
+
+        <div class="form-group">
+            <label for="title">Tiêu đề:</label>
+            @Html.TextBox("title", null, new { @class = "form-control", @placeholder = "Nhập tiêu đề" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        <a href="@Url.Action("Index", "Posts")" class="btn btn-default">Quay lại danh sách</a>
+
+    </fieldset>
+}
+<table class="table">
+    <tr>
+        <th>
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.TitleSortParm })">
+                Tieu de
+                @if (ViewBag.CurrentSort == "title_desc")
+                {
+                    <i class="fa fa-sort-down"></i>
+                }
+                else if (ViewBag.CurrentSort == "")
+                {
+                    <i class="fa fa-sort-up"></i>
+                }
+                else
+                {
+                    <i class="fa fa-sort"></i>
+                }
+            </a>
+        </th>
+        <th>
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.ContentSortParm })">
+                Noi dung
+                @if (ViewBag.CurrentSort == "content_desc")
+                {
+                    <i class="fa fa-sort-down"></i>
+                }
+                else if (ViewBag.CurrentSort == "Content")
+                {
+                    <i class="fa fa-sort-up"></i>
+                }
+                else
+                {
+                    <i class="fa fa-sort"></i>
+                }
+            </a>
+        </th>
+        <th>Ngày tạo</th>
+        <th>Tùy chỉnh</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Blog.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.PostId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.PostId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.PostId })
+            </td>
+        </tr>
+    }
+
+</table>
+<!-- Thêm mã phân trang -->
+<br />
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+        @using (Html.BeginForm("Index", "Posts", FormMethod.Get))
+        {
+            <p>
+                Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.size, new { @onchange = "this.form.submit();" })
+            </p>
+
+            @Html.Hidden("page", (object)ViewBag.page)
+            @Html.Hidden("sortProperty", (object)ViewBag.sortProperty)
+            @Html.Hidden("sortOrder", (object)ViewBag.sortOrder)
+            @Html.Hidden("searchString", (object)ViewBag.searchValue)
+        }
+    </div>
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+        Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, size = ViewBag.currentSize, sortProperty = ViewBag.sortProperty, sortOrder = ViewBag.SortOrder, searchString = ViewBag.searchValue }))
+<!-- Kết thúc -->

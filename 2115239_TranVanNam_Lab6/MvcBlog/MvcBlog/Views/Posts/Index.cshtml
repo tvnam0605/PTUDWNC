@@ -1,0 +1,90 @@
+﻿@model IEnumerable<MvcBlog.Models.Post>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Posts", FormMethod.Get, new { @class = "search-form" }))
+{
+    <fieldset>
+        <legend>Tìm kiếm bài viết</legend>
+
+        <div class="form-group">
+            <label for="title">Tiêu đề:</label>
+            @Html.TextBox("title", null, new { @class = "form-control", @placeholder = "Nhập tiêu đề" })
+        </div>
+
+        <div class="form-group">
+            <label for="blogId">Blog:</label>
+            @Html.DropDownList("blogId", (SelectList)ViewBag.BlogId, "Chọn một blog", new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            <label for="fromDate">Từ ngày:</label>
+            @Html.TextBox("fromDate", null, new { @class = "form-control", @type = "date" })
+        </div>
+        <div class="form-group">
+            <label for="toDate">Đến ngày:</label>
+            @Html.TextBox("toDate", null, new { @class = "form-control", @type = "date" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </fieldset>
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Content)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Blog.Name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Blog.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.PostId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.PostId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.PostId })
+            </td>
+        </tr>
+    }
+
+</table>

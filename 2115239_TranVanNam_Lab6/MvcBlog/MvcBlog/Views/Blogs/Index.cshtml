@@ -1,0 +1,76 @@
+﻿@model IEnumerable<MvcBlog.Models.Blog>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Blogs", FormMethod.Get, new { @class = "form-horizontal" }))
+{
+    <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Tiêu đề:</label>
+        <div class="col-sm-10">
+            @Html.TextBox("name", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="des" class="col-sm-2 control-label">Mô tả:</label>
+        <div class="col-sm-10">
+            @Html.TextBox("des", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="owner" class="col-sm-2 control-label">Chủ:</label>
+        <div class="col-sm-10">
+            @Html.DropDownList("owner", ViewBag.OwnerList as SelectList, "Chọn người chủ", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+            <a href="@Url.Action("Index", "Blogs")" class="btn btn-default">Quay lại danh sách</a>
+        </div>
+    </div>
+}
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Owner)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.BlogId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.BlogId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.BlogId })
+            </td>
+        </tr>
+    }
+
+</table>

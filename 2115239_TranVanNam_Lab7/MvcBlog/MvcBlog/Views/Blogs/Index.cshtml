@@ -1,0 +1,151 @@
+﻿<!-- Thêm thư viện -->
+@model PagedList.IPagedList<MvcBlog.Models.Blog>
+@using PagedList.Mvc;
+<!-- Kết thúc-->
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+<style>
+    .fa {
+        margin-left: 5px; /* Giảm khoảng cách giữa tiêu đề và icon */
+    }
+</style>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Blogs", FormMethod.Get, new { @class = "form-horizontal" }))
+{
+    <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Tiêu đề:</label>
+        <div class="col-sm-10">
+            @Html.TextBox("name", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="des" class="col-sm-2 control-label">Mô tả:</label>
+        <div class="col-sm-10">
+            @Html.TextBox("des", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="owner" class="col-sm-2 control-label">Chủ:</label>
+        <div class="col-sm-10">
+            @Html.DropDownList("owner", ViewBag.OwnerList as SelectList, "Chọn người chủ", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+            <a href="@Url.Action("Index", "Blogs")" class="btn btn-default">Quay lại danh sách</a>
+        </div>
+    </div>
+}
+<table class="table">
+    <tr>
+        <th>
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.NameSortParm })">
+                Name
+                @if (ViewBag.CurrentSort == "name_desc")
+                {
+                    <i class="fa fa-sort-down"></i>
+                }
+                else if (ViewBag.CurrentSort == "")
+                {
+                    <i class="fa fa-sort-up"></i>
+                }
+                else
+                {
+                    <i class="fa fa-sort"></i>
+                }
+            </a>
+        </th>
+        <th>
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.DescriptionSortParm })">
+                Description
+                @if (ViewBag.CurrentSort == "description_desc")
+                {
+                    <i class="fa fa-sort-down"></i>
+                }
+                else if (ViewBag.CurrentSort == "Description")
+                {
+                    <i class="fa fa-sort-up"></i>
+                }
+                else
+                {
+                    <i class="fa fa-sort"></i>
+                }
+            </a>
+        </th>
+        <th>
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.OwnerSortParm })">
+                Owner
+                @if (ViewBag.CurrentSort == "owner_desc")
+                {
+                    <i class="fa fa-sort-down"></i>
+                }
+                else if (ViewBag.CurrentSort == "Owner")
+                {
+                    <i class="fa fa-sort-up"></i>
+                }
+                else
+                {
+                    <i class="fa fa-sort"></i>
+                }
+            </a>
+        </th>
+        <th>
+            Tùy chọn
+        </th>
+
+
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.BlogId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.BlogId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.BlogId })
+            </td>
+        </tr>
+    }
+
+</table>
+<!-- Thêm mã phân trang -->
+<br />
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+        @using (Html.BeginForm("Index", "Blogs", FormMethod.Get))
+        {
+            <p>
+                Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.size, new { @onchange = "this.form.submit();" })
+            </p>
+
+            @Html.Hidden("page", (object)ViewBag.page)
+            @Html.Hidden("sortProperty", (object)ViewBag.sortProperty)
+            @Html.Hidden("sortOrder", (object)ViewBag.sortOrder)
+            @Html.Hidden("searchString", (object)ViewBag.searchValue)
+        }
+    </div>
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+        Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, size = ViewBag.currentSize, sortProperty = ViewBag.sortProperty, sortOrder = ViewBag.SortOrder, searchString = ViewBag.searchValue }))
+<!-- Kết thúc -->

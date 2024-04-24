@@ -1,0 +1,24 @@
+﻿@model IEnumerable<MvcBlog.Models.BlogStatistic>
+@{
+    ViewBag.Title = "Blog Statistics";
+}
+
+<h2>Blog Statistics</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Owner</th>
+            <th>Blog Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var stat in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => stat.Owner)</td>
+                <td>@Html.DisplayFor(modelItem => stat.BlogCount)</td>
+            </tr>
+        }
+    </tbody>
+</table>
